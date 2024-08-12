@@ -24,6 +24,7 @@ interface IDASigners {
     /*=== event ===*/
     event NewSigner(address indexed signer, BN254.G1Point pkG1, BN254.G2Point pkG2);
     event SocketUpdated(address indexed signer, string socket);
+    event ParamsUpdated(Params params);
 
     /*=== function ===*/
     function params() external view returns (Params memory);
