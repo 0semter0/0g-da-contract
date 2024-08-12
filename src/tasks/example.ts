@@ -144,6 +144,28 @@ task("precompile:getquorum", "get quorum")
         console.log(quorum);
     });
 
+task("precompile:getallquorum", "get quorum")
+    .addParam("epoch", "epoch number", undefined, types.int, false)
+    .setAction(async (args: { epoch: number }, hre) => {
+        const precompile = Factories.IDASigners__factory.connect(
+            "0x0000000000000000000000000000000000001000",
+            (await hre.ethers.getSigners())[0]
+        );
+        const cnt = await precompile.quorumCount(args.epoch);
+        const res: { [key: number]: { [key: string]: number } } = {};
+        for (let i = 0; i < cnt; ++i) {
+            const quorum = await precompile.getQuorum(args.epoch, i);
+            res[i] = {};
+            for (const j of quorum) {
+                if (!(j in res[i])) {
+                    res[i][j] = 0;
+                }
+                ++res[i][j];
+            }
+        }
+        console.log(res);
+    });
+
 task("precompile:getquorumrow", "get quorum row")
     .addParam("epoch", "epoch number", undefined, types.int, false)
     .addParam("quorum", "quorum id", undefined, types.int, false)
